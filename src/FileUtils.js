@@ -14,9 +14,9 @@ function silentUnlink(file) {
 	}
 }
 
-function silentRmdir(file) {
+function silentRmdir(folder) {
 	try {
-		fs.rmdirSync(file);
+		fs.rmdirSync(folder);
 	} catch(e) {
 		winston.debug(e);
 	}

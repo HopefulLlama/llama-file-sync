@@ -1,6 +1,7 @@
 const path = require('path');
 
 const mkdirp = require('mkdirp');
+const rimraf = require('rimraf');
 const winston = require('winston');
 
 const Watcher = require('./watcher/Watcher');
@@ -27,6 +28,10 @@ function setup(pathToConfig, callback) {
 
 function main(config, callback) {
 	config.src = Array.isArray(config.src) ? config.src : [config.src];
+
+	if(config.cleanDest === true) {
+		rimraf.sync(config.dest);
+	}
 
 	mkdirp(config.dest, (mkdirpError) => {
 		if(mkdirpError) {

@@ -5,11 +5,14 @@ const expect = require('chai').expect;
 describe('mainTest', () => {
 	const sandbox = sinon.createSandbox();
 	
-	let mockMkdirp, mockWinston, mockErrorHandler, mockValidConfig, mockConfigReader, mockWatcher, mockWatcherStrategy;
+	let mockMkdirp, mockRimraf, mockWinston, mockErrorHandler, mockValidConfig, mockConfigReader, mockWatcher, mockWatcherStrategy;
 	let main;
 
 	beforeEach(() => {
 		mockMkdirp = sandbox.stub();
+
+		mockRimraf = sandbox.stub();
+
 		mockWinston = {
 			error: sandbox.stub(),
 			info: sandbox.stub()
@@ -41,6 +44,7 @@ describe('mainTest', () => {
 		main = proxyquire('../../src/main', {
 			'mkdirp': mockMkdirp,
 			'winston': mockWinston,
+			'rimraf': mockRimraf,
 			'./ErrorHandler': mockErrorHandler,
 			'./ConfigReader': mockConfigReader,
 			'./watcher/Watcher': mockWatcher,
@@ -98,6 +102,29 @@ describe('mainTest', () => {
 
 				expect(error).to.equal(undefined);
 				expect(watchers.length).to.equal(mockValidConfig.src.length);
+			});
+		});
+
+		it('should rimraf the destination if config.cleanDest is on', () => {
+			mockValidConfig.cleanDest = true;
+
+			main.run('validConfig', () => {
+				sinon.assert.calledWith(mockRimraf.sync, mockValidConfig.dest);
+				sinon.assert.callOrder(mockRimraf.sync, mockMkdirp.sync);
+			});
+		});
+
+		it('should not rimraf the destination if config.cleanDest is off', () => {
+			mockValidConfig.cleanDest = false;
+
+			main.run('validConfig', () => {
+				sinon.assert.notCalled(mockRimraf.sync);
+			});
+		});
+
+		it('should not rimraf the destination if config.cleanDest is not set', () => {
+			main.run('validConfig', () => {
+				sinon.assert.notCalled(mockRimraf.sync);
 			});
 		});
 	});
