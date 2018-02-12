@@ -75,7 +75,7 @@ describe('mainTest', () => {
 		});
 	});
 
-	describe('valid configs', () => {
+	describe('valid config', () => {
 		beforeEach(() => {
 			mockConfigReader.read.returns(mockValidConfig);
 		});
@@ -102,6 +102,21 @@ describe('mainTest', () => {
 
 				expect(error).to.equal(undefined);
 				expect(watchers.length).to.equal(mockValidConfig.src.length);
+			});
+		});
+
+		it('should work when src is just a string', () => {
+			mockValidConfig.src = 'single/file';
+			mockMkdirp.yields();
+
+			main.run('validConfig', (error, watchers) => {
+				sinon.assert.calledWith(mockWatcherStrategy.preserve, mockValidConfig.src, mockValidConfig.dest);
+				sinon.assert.calledWith(mockWatcher.generateWatcher, {}, mockValidConfig.src);
+
+				sinon.assert.calledWith(mockWinston.info, 'llama-file-sync initialized');
+
+				expect(error).to.equal(undefined);
+				expect(watchers.length).to.equal(1);
 			});
 		});
 

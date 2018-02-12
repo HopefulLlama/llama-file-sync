@@ -27,7 +27,7 @@ function setup(pathToConfig, callback) {
 }
 
 function main(config, callback) {
-	config.src = Array.isArray(config.src) ? config.src : [config.src];
+	const sourcePaths = Array.isArray(config.src) ? config.src : [config.src];
 
 	if(config.cleanDest === true) {
 		rimraf.sync(config.dest);
@@ -37,7 +37,7 @@ function main(config, callback) {
 		if(mkdirpError) {
 			callback(mkdirpError);
 		} else {
-			const watchers = config.src.map((filePath) => {
+			const watchers = sourcePaths.map((filePath) => {
 				const strategy = WatcherStrategy[config.strategy](filePath, config.dest);
 				return Watcher.generateWatcher(strategy, filePath);
 			});
