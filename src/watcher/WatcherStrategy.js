@@ -26,9 +26,7 @@ function withBasePathRemoved(sourcePath, destinationPath, callback) {
 	return (filePath) => {
 		filePath = filePath.replace(/\\/g, '/');
 		const trimmedFilePath = FileUtils.removeBasePath(sourcePath, filePath);
-		if(trimmedFilePath !== '') {
-			callback(filePath, destinationPath, trimmedFilePath);
-		}
+		callback(filePath, destinationPath, trimmedFilePath);
 	};
 }
 
