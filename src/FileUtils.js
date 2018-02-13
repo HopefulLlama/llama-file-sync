@@ -9,7 +9,7 @@ function copy(src, dest) {
 function silentUnlink(file) {
 	try {
 		fs.unlinkSync(file);
-	} catch(e) {
+	} catch (e) {
 		winston.debug(e);
 	}
 }
@@ -17,7 +17,7 @@ function silentUnlink(file) {
 function silentRmdir(folder) {
 	try {
 		fs.rmdirSync(folder);
-	} catch(e) {
+	} catch (e) {
 		winston.debug(e);
 	}
 }
@@ -26,12 +26,13 @@ function removeBasePath(basePath, filePath) {
 	const splitBasePath = basePath.split('/');
 	const splitFilePath = filePath.split('/');
 
-	let relativeFilePath = splitFilePath.reduce((accumulator, pathPart, index) => {
-		if(pathPart !== splitBasePath[index]) {
-			accumulator.push(pathPart);
-		}
-		return accumulator;
-	}, [])
+	let relativeFilePath = splitFilePath
+		.reduce((accumulator, pathPart, index) => {
+			if (pathPart !== splitBasePath[index]) {
+				accumulator.push(pathPart);
+			}
+			return accumulator;
+		}, [])
 		.join('/');
 
 	return relativeFilePath;
@@ -41,5 +42,5 @@ module.exports = {
 	copy,
 	silentUnlink,
 	silentRmdir,
-	removeBasePath
+	removeBasePath,
 };

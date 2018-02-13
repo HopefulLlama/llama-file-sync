@@ -12,7 +12,7 @@ describe('FileUtilsTest', () => {
 
 	beforeEach(() => {
 		mockStatSync = {
-			isDirectory: sandbox.stub()
+			isDirectory: sandbox.stub(),
 		};
 
 		mockFs = {
@@ -20,16 +20,16 @@ describe('FileUtilsTest', () => {
 			readFileSync: sandbox.stub().returns(mockReadFileSync),
 			unlinkSync: sandbox.stub(),
 			rmdirSync: sandbox.stub(),
-			statSync: sandbox.stub().returns(mockStatSync)
+			statSync: sandbox.stub().returns(mockStatSync),
 		};
 
 		mockWinston = {
-			debug: sandbox.stub()
+			debug: sandbox.stub(),
 		};
 
 		FileUtils = proxyquire('../../src/FileUtils', {
-			'fs': mockFs,
-			'winston': mockWinston
+			fs: mockFs,
+			winston: mockWinston,
 		});
 	});
 
@@ -49,7 +49,7 @@ describe('FileUtilsTest', () => {
 
 	it('should unlink the file', () => {
 		const file = 'file';
-    
+
 		FileUtils.silentUnlink(file);
 
 		sinon.assert.calledWith(mockFs.unlinkSync, file);
@@ -80,7 +80,7 @@ describe('FileUtilsTest', () => {
 		FileUtils.silentRmdir(dir);
 
 		sinon.assert.calledWith(mockFs.rmdirSync, dir);
-		sinon.assert.called(mockWinston.debug);    
+		sinon.assert.called(mockWinston.debug);
 	});
 
 	it('should remove the beginning of paths which are common', () => {

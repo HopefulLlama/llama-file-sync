@@ -5,62 +5,53 @@ const expect = require('chai').expect;
 const proxyquire = require('proxyquire');
 
 describe('WatcherStrategyTest', () => {
-	const eventNames = [
-		'add', 
-		'change', 
-		'unlink', 
-		'addDir', 
-		'unlinkDir', 
-		'error', 
-		'ready', 
-		'raw'
-	];
+	const eventNames = ['add', 'change', 'unlink', 'addDir', 'unlinkDir', 'error', 'ready', 'raw'];
 
 	const sandbox = sinon.createSandbox();
-	
+
 	let watchedPath, eventTriggeringObject, eventTriggeringPath, destination, newFileDestination;
 	let mockStatSync, mockFs, mockFileUtils, mockWinston, mockMkdirp, mockRimraf;
-  
+
 	let WatcherStrategy;
-  
+
 	beforeEach(() => {
 		mockStatSync = {
-			isDirectory: sandbox.stub()
+			isDirectory: sandbox.stub(),
 		};
 
 		mockFs = {
-			statSync: sandbox.stub().returns(mockStatSync)
+			statSync: sandbox.stub().returns(mockStatSync),
 		};
-		
+
 		mockFileUtils = {
 			copy: sandbox.stub(),
 			silentUnlink: sandbox.stub(),
 			silentRmdir: sandbox.stub(),
-			removeBasePath: sandbox.stub()
+			removeBasePath: sandbox.stub(),
 		};
 
 		mockWinston = {
 			debug: sandbox.stub(),
-			info: sandbox.stub()
+			info: sandbox.stub(),
 		};
 
 		mockMkdirp = {
-			sync: sandbox.stub()
+			sync: sandbox.stub(),
 		};
 
 		mockRimraf = {
-			sync: sandbox.stub()
+			sync: sandbox.stub(),
 		};
 
 		WatcherStrategy = proxyquire('../../../src/watcher/WatcherStrategy', {
-			'fs': mockFs,
+			fs: mockFs,
 			'../FileUtils': mockFileUtils,
-			'winston': mockWinston,
-			'mkdirp': mockMkdirp,
-			'rimraf': mockRimraf
+			winston: mockWinston,
+			mkdirp: mockMkdirp,
+			rimraf: mockRimraf,
 		});
 	});
-  
+
 	afterEach(() => {
 		sandbox.restore();
 	});
@@ -68,7 +59,7 @@ describe('WatcherStrategyTest', () => {
 	describe('where watched path is a file', () => {
 		beforeEach(() => {
 			mockStatSync.isDirectory.returns(false);
-			
+
 			watchedPath = 'nested/watched/path';
 			eventTriggeringObject = 'triggered';
 			eventTriggeringPath = `${watchedPath}/${eventTriggeringObject}`;
@@ -79,19 +70,19 @@ describe('WatcherStrategyTest', () => {
 		describe('preserve', () => {
 			let eventListeners;
 
-			beforeEach(() => { 
-				eventListeners = WatcherStrategy.preserve(eventTriggeringPath, destination);        
+			beforeEach(() => {
+				eventListeners = WatcherStrategy.preserve(eventTriggeringPath, destination);
 			});
 
 			it('should return a map of event listeners', () => {
-				eventNames.forEach((name) => {
+				eventNames.forEach(name => {
 					expect(eventListeners.get(name)).to.be.a('function');
 				});
 			});
 
 			it('should copy on add', () => {
 				const add = eventListeners.get('add');
-				
+
 				add(eventTriggeringPath);
 
 				sinon.assert.calledWith(mockWinston.info, `File ${eventTriggeringObject} has been added`);
@@ -120,19 +111,19 @@ describe('WatcherStrategyTest', () => {
 		describe('oneWaySync', () => {
 			let eventListeners;
 
-			beforeEach(() => { 
-				eventListeners = WatcherStrategy.oneWaySync(eventTriggeringPath, destination);        
+			beforeEach(() => {
+				eventListeners = WatcherStrategy.oneWaySync(eventTriggeringPath, destination);
 			});
 
 			it('should return a map of event listeners', () => {
-				eventNames.forEach((name) => {
+				eventNames.forEach(name => {
 					expect(eventListeners.get(name)).to.be.a('function');
 				});
 			});
 
 			it('should copy on add', () => {
 				const add = eventListeners.get('add');
-				
+
 				add(eventTriggeringPath);
 
 				sinon.assert.calledWith(mockWinston.info, `File ${eventTriggeringObject} has been added`);
@@ -180,7 +171,7 @@ describe('WatcherStrategyTest', () => {
 	describe('where watched path is a file', () => {
 		beforeEach(() => {
 			mockStatSync.isDirectory.returns(true);
-			
+
 			watchedPath = 'nested/watched/path';
 			eventTriggeringObject = 'triggered/path/to/file';
 			eventTriggeringPath = `${watchedPath}/${eventTriggeringObject}`;
@@ -193,19 +184,19 @@ describe('WatcherStrategyTest', () => {
 		describe('preserve', () => {
 			let eventListeners;
 
-			beforeEach(() => { 
-				eventListeners = WatcherStrategy.preserve(eventTriggeringPath, destination);        
+			beforeEach(() => {
+				eventListeners = WatcherStrategy.preserve(eventTriggeringPath, destination);
 			});
 
 			it('should return a map of event listeners', () => {
-				eventNames.forEach((name) => {
+				eventNames.forEach(name => {
 					expect(eventListeners.get(name)).to.be.a('function');
 				});
 			});
 
 			it('should copy on add', () => {
 				const add = eventListeners.get('add');
-				
+
 				add(eventTriggeringPath);
 
 				sinon.assert.calledWith(mockWinston.info, `File ${eventTriggeringObject} has been added`);
@@ -234,19 +225,19 @@ describe('WatcherStrategyTest', () => {
 		describe('oneWaySync', () => {
 			let eventListeners;
 
-			beforeEach(() => { 
-				eventListeners = WatcherStrategy.oneWaySync(eventTriggeringPath, destination);        
+			beforeEach(() => {
+				eventListeners = WatcherStrategy.oneWaySync(eventTriggeringPath, destination);
 			});
 
 			it('should return a map of event listeners', () => {
-				eventNames.forEach((name) => {
+				eventNames.forEach(name => {
 					expect(eventListeners.get(name)).to.be.a('function');
 				});
 			});
 
 			it('should copy on add', () => {
 				const add = eventListeners.get('add');
-				
+
 				add(eventTriggeringPath);
 
 				sinon.assert.calledWith(mockWinston.info, `File ${eventTriggeringObject} has been added`);

@@ -10,11 +10,11 @@ const ErrorHandler = require('./ErrorHandler');
 const ConfigReader = require('./ConfigReader');
 
 function setup(pathToConfig, callback) {
-	if(pathToConfig !== undefined) {
+	if (pathToConfig !== undefined) {
 		let config;
 		try {
 			config = ConfigReader.read(path.resolve(process.cwd(), pathToConfig));
-		} catch(error) {
+		} catch (error) {
 			winston.error(error);
 			callback(ErrorHandler.INVALID_CONFIG);
 			return;
@@ -29,15 +29,15 @@ function setup(pathToConfig, callback) {
 function main(config, callback) {
 	const sourcePaths = Array.isArray(config.src) ? config.src : [config.src];
 
-	if(config.cleanDest === true) {
+	if (config.cleanDest === true) {
 		rimraf.sync(config.dest);
 	}
 
-	mkdirp(config.dest, (mkdirpError) => {
-		if(mkdirpError) {
+	mkdirp(config.dest, mkdirpError => {
+		if (mkdirpError) {
 			callback(mkdirpError);
 		} else {
-			const watchers = sourcePaths.map((filePath) => {
+			const watchers = sourcePaths.map(filePath => {
 				const strategy = WatcherStrategy[config.strategy](filePath, config.dest);
 				return Watcher.generateWatcher(strategy, filePath);
 			});
@@ -49,5 +49,5 @@ function main(config, callback) {
 }
 
 module.exports = {
-	run: setup
+	run: setup,
 };

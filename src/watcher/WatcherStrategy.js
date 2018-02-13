@@ -7,12 +7,10 @@ const rimraf = require('rimraf');
 
 const FileUtils = require('../FileUtils');
 
-function noop() {
-
-}
+function noop() {}
 
 function withJustFileName(destinationPath, callback) {
-	return (filePath) => {
+	return filePath => {
 		filePath = filePath.replace('/\\/g', '/');
 
 		const splitFilePath = filePath.split('/');
@@ -23,7 +21,7 @@ function withJustFileName(destinationPath, callback) {
 }
 
 function withBasePathRemoved(sourcePath, destinationPath, callback) {
-	return (filePath) => {
+	return filePath => {
 		filePath = filePath.replace(/\\/g, '/');
 		const trimmedFilePath = FileUtils.removeBasePath(sourcePath, filePath);
 		callback(filePath, destinationPath, trimmedFilePath);
@@ -46,7 +44,9 @@ function onAddDir(filePath, destinationPath, relativeFilePath) {
 }
 
 const preserve = (sourcePath, destinationPath) => {
-	let filePathManipulator = fs.statSync(sourcePath).isDirectory() ? withBasePathRemoved.bind(null, sourcePath, destinationPath) : withJustFileName.bind(null, destinationPath);
+	let filePathManipulator = fs.statSync(sourcePath).isDirectory()
+		? withBasePathRemoved.bind(null, sourcePath, destinationPath)
+		: withJustFileName.bind(null, destinationPath);
 
 	return new Map([
 		['add', filePathManipulator(onAdd)],
@@ -56,34 +56,42 @@ const preserve = (sourcePath, destinationPath) => {
 		['unlinkDir', noop],
 		['error', noop],
 		['ready', noop],
-		['raw', noop]
+		['raw', noop],
 	]);
 };
 
 const oneWaySync = (sourcePath, destinationPath) => {
-	let filePathManipulator = fs.statSync(sourcePath).isDirectory() ? withBasePathRemoved.bind(null, sourcePath, destinationPath) : withJustFileName.bind(null, destinationPath);
-	
+	let filePathManipulator = fs.statSync(sourcePath).isDirectory()
+		? withBasePathRemoved.bind(null, sourcePath, destinationPath)
+		: withJustFileName.bind(null, destinationPath);
+
 	return new Map([
 		['add', filePathManipulator(onAdd)],
 		['change', filePathManipulator(onChange)],
-		['unlink', filePathManipulator((filePath, destinationPath, relativeFilePath) => {
-			winston.info(`File ${relativeFilePath} has been deleted`);
-			FileUtils.silentUnlink(path.join(destinationPath, relativeFilePath));
-		})],
+		[
+			'unlink',
+			filePathManipulator((filePath, destinationPath, relativeFilePath) => {
+				winston.info(`File ${relativeFilePath} has been deleted`);
+				FileUtils.silentUnlink(path.join(destinationPath, relativeFilePath));
+			}),
+		],
 		['addDir', filePathManipulator(onAddDir)],
-		['unlinkDir', filePathManipulator((filePath, destinationPath, relativeFilePath) => {
-			winston.info(`Directory ${relativeFilePath} has been deleted`);
-			rimraf.sync(path.join(destinationPath, relativeFilePath));
-			// Sometimes rimraf fails to actually delete the root folder ???
-			FileUtils.silentRmdir(path.join(destinationPath, relativeFilePath));
-		})],
+		[
+			'unlinkDir',
+			filePathManipulator((filePath, destinationPath, relativeFilePath) => {
+				winston.info(`Directory ${relativeFilePath} has been deleted`);
+				rimraf.sync(path.join(destinationPath, relativeFilePath));
+				// Sometimes rimraf fails to actually delete the root folder ???
+				FileUtils.silentRmdir(path.join(destinationPath, relativeFilePath));
+			}),
+		],
 		['error', noop],
 		['ready', noop],
-		['raw', noop]
+		['raw', noop],
 	]);
 };
 
 module.exports = {
 	preserve,
-	oneWaySync
+	oneWaySync,
 };

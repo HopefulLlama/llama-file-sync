@@ -14,5 +14,5 @@ function generateWatcher(watcherStrategy, filesToWatch) {
 }
 
 module.exports = {
-	generateWatcher
+	generateWatcher,
 };

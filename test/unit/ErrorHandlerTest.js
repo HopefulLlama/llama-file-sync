@@ -16,11 +16,17 @@ describe('ErrorHandlerTest', () => {
 
 	describe('messages', () => {
 		it('should have the right msesage for invalid config', () => {
-			expect(ErrorHandler.INVALID_CONFIG).to.equal(`usage: llama-file-sync <file>${os.EOL}The supplied path to the configuration file does not point to a valid configuration file.`);
+			expect(ErrorHandler.INVALID_CONFIG).to.equal(
+				`usage: llama-file-sync <file>${
+					os.EOL
+				}The supplied path to the configuration file does not point to a valid configuration file.`
+			);
 		});
 
 		it('should have the right message for a missing config', () => {
-			expect(ErrorHandler.MISSING_CONFIG).to.equal(`usage: llama-file-sync <file>${os.EOL}Must specify a configuration file when calling llama-file-sync.`);
+			expect(ErrorHandler.MISSING_CONFIG).to.equal(
+				`usage: llama-file-sync <file>${os.EOL}Must specify a configuration file when calling llama-file-sync.`
+			);
 		});
 	});
 

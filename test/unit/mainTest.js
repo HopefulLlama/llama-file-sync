@@ -4,8 +4,15 @@ const expect = require('chai').expect;
 
 describe('mainTest', () => {
 	const sandbox = sinon.createSandbox();
-	
-	let mockMkdirp, mockRimraf, mockWinston, mockErrorHandler, mockValidConfig, mockConfigReader, mockWatcher, mockWatcherStrategy;
+
+	let mockMkdirp,
+		mockRimraf,
+		mockWinston,
+		mockErrorHandler,
+		mockValidConfig,
+		mockConfigReader,
+		mockWatcher,
+		mockWatcherStrategy;
 	let main;
 
 	beforeEach(() => {
@@ -15,40 +22,40 @@ describe('mainTest', () => {
 
 		mockWinston = {
 			error: sandbox.stub(),
-			info: sandbox.stub()
+			info: sandbox.stub(),
 		};
-		
+
 		mockErrorHandler = {
 			MISSING_CONFIG: 'missing config',
-			INVALID_CONFIG: 'invalid config'
+			INVALID_CONFIG: 'invalid config',
 		};
-		
+
 		mockValidConfig = {
 			src: ['mock-folder', 'mock/nested/folder', 'mock-file.txt', 'mock/nested/file.txt'],
 			dest: 'dest',
-			strategy: 'preserve'
+			strategy: 'preserve',
 		};
-		
+
 		mockConfigReader = {
-			read: sandbox.stub()
+			read: sandbox.stub(),
 		};
-		
+
 		mockWatcherStrategy = {
-			preserve: sandbox.stub().returns({})
+			preserve: sandbox.stub().returns({}),
 		};
-		
+
 		mockWatcher = {
-			generateWatcher: sandbox.stub().returns({})
+			generateWatcher: sandbox.stub().returns({}),
 		};
-		
+
 		main = proxyquire('../../src/main', {
-			'mkdirp': mockMkdirp,
-			'winston': mockWinston,
-			'rimraf': mockRimraf,
+			mkdirp: mockMkdirp,
+			winston: mockWinston,
+			rimraf: mockRimraf,
 			'./ErrorHandler': mockErrorHandler,
 			'./ConfigReader': mockConfigReader,
 			'./watcher/Watcher': mockWatcher,
-			'./watcher/WatcherStrategy': mockWatcherStrategy
+			'./watcher/WatcherStrategy': mockWatcherStrategy,
 		});
 	});
 
@@ -62,13 +69,13 @@ describe('mainTest', () => {
 		});
 
 		it('should throw an error if pathToConfig is undefined', () => {
-			main.run(undefined, (error) => {
+			main.run(undefined, error => {
 				expect(error).to.equal(mockErrorHandler.MISSING_CONFIG);
 			});
 		});
 
 		it('should throw an error if reading the config failed', () => {
-			main.run('doesnt_exists', (error) => {
+			main.run('doesnt_exists', error => {
 				sinon.assert.called(mockWinston.error);
 				expect(error).to.equal(mockErrorHandler.INVALID_CONFIG);
 			});
@@ -79,12 +86,12 @@ describe('mainTest', () => {
 		beforeEach(() => {
 			mockConfigReader.read.returns(mockValidConfig);
 		});
-		
+
 		it('should throw an error if mkdirp errors', () => {
 			const error = 'error';
 			mockMkdirp.yields(error);
 
-			main.run('validConfig', (receivedError) => {
+			main.run('validConfig', receivedError => {
 				expect(receivedError).to.equal(error);
 			});
 		});
@@ -93,7 +100,7 @@ describe('mainTest', () => {
 			mockMkdirp.yields();
 
 			main.run('validConfig', (error, watchers) => {
-				mockValidConfig.src.forEach((filePath) => {
+				mockValidConfig.src.forEach(filePath => {
 					sinon.assert.calledWith(mockWatcherStrategy.preserve, filePath, mockValidConfig.dest);
 					sinon.assert.calledWith(mockWatcher.generateWatcher, {}, filePath);
 				});

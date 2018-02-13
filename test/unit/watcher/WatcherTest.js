@@ -12,7 +12,7 @@ describe('WatcherTest', () => {
 	let watcher;
 	beforeEach(() => {
 		watcher = {
-			on: sandbox.spy()
+			on: sandbox.spy(),
 		};
 		chokidar.watch = sandbox.stub().returns(watcher);
 		winston.info = sandbox.spy();
@@ -23,11 +23,7 @@ describe('WatcherTest', () => {
 	});
 
 	it('should generate a watcher, listening to a map of events and listener', () => {
-		const eventListeners = new Map([
-			['foo', () => {}],
-			['bar', () => {}],
-			['boom', () => {}]
-		]);
+		const eventListeners = new Map([['foo', () => {}], ['bar', () => {}], ['boom', () => {}]]);
 		const filesToWatch = ['f1.txt', 'f2.txt', 'f3.txt'];
 
 		const result = Watcher.generateWatcher(eventListeners, filesToWatch);
@@ -35,9 +31,9 @@ describe('WatcherTest', () => {
 		sinon.assert.calledWith(chokidar.watch, filesToWatch);
 		eventListeners.forEach((value, key) => {
 			sinon.assert.calledWith(watcher.on, key, value);
-		}); 
+		});
 		sinon.assert.calledWith(winston.info, `Watching ${filesToWatch}`);
-		
+
 		expect(result).to.equal(watcher);
 	});
 });
