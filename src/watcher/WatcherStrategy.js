@@ -9,11 +9,13 @@ const FileUtils = require('../FileUtils');
 
 function noop() {}
 
+function toPosix(filePath) {
+	return filePath.replace('/\\/g', '/');
+}
+
 function withJustFileName(destinationPath, callback) {
 	return filePath => {
-		filePath = filePath.replace('/\\/g', '/');
-
-		const splitFilePath = filePath.split('/');
+		const splitFilePath = toPosix(filePath).split('/');
 		const fileName = splitFilePath[splitFilePath.length - 1];
 
 		callback(filePath, destinationPath, fileName);
@@ -22,8 +24,7 @@ function withJustFileName(destinationPath, callback) {
 
 function withBasePathRemoved(sourcePath, destinationPath, callback) {
 	return filePath => {
-		filePath = filePath.replace(/\\/g, '/');
-		const trimmedFilePath = FileUtils.removeBasePath(sourcePath, filePath);
+		const trimmedFilePath = FileUtils.removeBasePath(sourcePath, toPosix(filePath));
 		callback(filePath, destinationPath, trimmedFilePath);
 	};
 }
