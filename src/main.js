@@ -7,16 +7,16 @@ const winston = require('winston');
 const Watcher = require('./watcher/Watcher');
 const WatcherStrategy = require('./watcher/WatcherStrategy');
 const ErrorHandler = require('./ErrorHandler');
-const ConfigReader = require('./ConfigReader');
+const Configuration = require('./Configuration');
 
 function setup(pathToConfig, callback) {
 	if (pathToConfig !== undefined) {
 		let config;
 		try {
-			config = ConfigReader.read(path.resolve(process.cwd(), pathToConfig));
+			config = new Configuration(path.resolve(process.cwd(), pathToConfig));
 		} catch (error) {
-			winston.error(error);
-			callback(ErrorHandler.INVALID_CONFIG);
+			winston.debug(error);
+			callback(error.message);
 			return;
 		}
 
@@ -27,8 +27,6 @@ function setup(pathToConfig, callback) {
 }
 
 function main(config, callback) {
-	const sourcePaths = Array.isArray(config.src) ? config.src : [config.src];
-
 	if (config.cleanDest === true) {
 		rimraf.sync(config.dest);
 	}
@@ -37,7 +35,7 @@ function main(config, callback) {
 		if (mkdirpError) {
 			callback(mkdirpError);
 		} else {
-			const watchers = sourcePaths.map(filePath => {
+			const watchers = config.src.map(filePath => {
 				const strategy = WatcherStrategy[config.strategy](filePath, config.dest);
 				return Watcher.generateWatcher(strategy, filePath);
 			});
