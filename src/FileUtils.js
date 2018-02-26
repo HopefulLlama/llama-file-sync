@@ -6,20 +6,20 @@ function copy(src, dest) {
 	fs.writeFileSync(dest, fs.readFileSync(src, 'utf8'));
 }
 
-function silentUnlink(file) {
+function silentOperation(func) {
 	try {
-		fs.unlinkSync(file);
+		func();
 	} catch (e) {
 		winston.debug(e);
 	}
 }
 
+function silentUnlink(file) {
+	silentOperation(() => fs.unlinkSync(file));
+}
+
 function silentRmdir(folder) {
-	try {
-		fs.rmdirSync(folder);
-	} catch (e) {
-		winston.debug(e);
-	}
+	silentOperation(() => fs.rmdirSync(folder));
 }
 
 function removeBasePath(basePath, filePath) {
