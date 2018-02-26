@@ -45,7 +45,7 @@ function onAddDir(filePath, destinationPath, relativeFilePath) {
 }
 
 const preserve = (sourcePath, destinationPath) => {
-	let filePathManipulator = fs.statSync(sourcePath).isDirectory()
+	const filePathManipulator = fs.statSync(sourcePath).isDirectory()
 		? withBasePathRemoved.bind(null, sourcePath, destinationPath)
 		: withJustFileName.bind(null, destinationPath);
 
@@ -62,7 +62,7 @@ const preserve = (sourcePath, destinationPath) => {
 };
 
 const oneWaySync = (sourcePath, destinationPath) => {
-	let filePathManipulator = fs.statSync(sourcePath).isDirectory()
+	const filePathManipulator = fs.statSync(sourcePath).isDirectory()
 		? withBasePathRemoved.bind(null, sourcePath, destinationPath)
 		: withJustFileName.bind(null, destinationPath);
 

@@ -26,7 +26,7 @@ function removeBasePath(basePath, filePath) {
 	const splitBasePath = basePath.split('/');
 	const splitFilePath = filePath.split('/');
 
-	let relativeFilePath = splitFilePath
+	const relativeFilePath = splitFilePath
 		.reduce((accumulator, pathPart, index) => {
 			if (pathPart !== splitBasePath[index]) {
 				accumulator.push(pathPart);

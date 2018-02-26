@@ -9,6 +9,7 @@ module.exports = {
 		ecmaVersion: 6,
 	},
 	rules: {
+		'prefer-const': ['error'],
 		indent: ['error', 'tab'],
 		'linebreak-style': ['error', 'windows'],
 		quotes: ['off'],
