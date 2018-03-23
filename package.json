@@ -1,6 +1,6 @@
 {
   "name": "llama-file-sync",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Keep directory files in sync",
   "main": "index.js",
   "scripts": {
