@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-### Added 
+### Added
 - `preserve` strategy; Report only additions and updates from `src` to `dest`
 - `oneWaySync` strategy; Report all additions, updates and deletions from `src` to `dest`
 - `cleanDest` optional configuration property; Delete all files and folders in `dest` before any synchronisation

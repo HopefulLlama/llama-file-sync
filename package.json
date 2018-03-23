@@ -1,14 +1,15 @@
 {
   "name": "llama-file-sync",
   "version": "0.0.0",
-  "description": "",
+  "description": "Keep directory files in sync",
   "main": "index.js",
   "scripts": {
-    "eslint": "eslint .eslintrc.js ./src/**/*.js ./test/**/*.js --no-ignore",
     "eslint-fix": "eslint  .eslintrc.js ./src/**/*.js ./test/**/*.js --no-ignore --fix",
+    "eslint": "eslint .eslintrc.js ./src/**/*.js ./test/**/*.js --no-ignore",
     "mocha": "nyc mocha --recursive",
-    "test": "npm run eslint && npm run mocha",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "release": "node ./node_modules/llama-rlsr/src/llama-rlsr.js llama-rlsr.config.js",
+    "test": "npm run eslint && npm run mocha"
   },
   "lint-staged": {
     ".eslintrc.js": [
@@ -34,16 +35,21 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "eslint": "^4.17.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-mocha": "^4.11.0",
     "eslint-plugin-prettier": "^2.6.0",
+    "eslint": "^4.17.0",
+    "github-api": "^3.0.0",
     "husky": "^0.14.3",
     "lint-staged": "^6.1.0",
+    "llama-rlsr-keep-a-changelog": "0.0.4",
+    "llama-rlsr-npm": "0.0.2",
+    "llama-rlsr": "0.0.6",
     "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "prettier": "^1.10.2",
     "proxyquire": "^1.8.0",
+    "simple-git": "^1.92.0",
     "sinon": "^4.2.2"
   }
 }
